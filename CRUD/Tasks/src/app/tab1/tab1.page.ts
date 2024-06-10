@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http'
 import { Component } from '@angular/core'
 import { AlertController } from '@ionic/angular'
-
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tab1',
@@ -13,6 +13,7 @@ export class Tab1Page {
   constructor(private http: HttpClient,
       public alertController: AlertController,
       // public modal: IonModal
+      private router: Router
   ) { }
 
   Api_url = 'http://localhost:3000/productos/';
@@ -38,6 +39,10 @@ export class Tab1Page {
   //     console.log(data);
   //   });
   // }
+
+  navigateToAddProduct() {
+    this.router.navigate(['/products/new']);
+  }
 
   // funcion para traer todo los productos
   listaProductos: any = [];
@@ -94,6 +99,12 @@ export class Tab1Page {
 
       await alert.present();
     }
+
+    // funcion para ir a la pagina de editar un producto
+    navigateToUpdateProduct(id: number) {
+      this.router.navigate(['/products/update', id]);
+    }
+
     // funcion para eliminar un producto
 
     async deleteProduct(productoID: number) {

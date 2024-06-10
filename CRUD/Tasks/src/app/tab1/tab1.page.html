@@ -3,7 +3,8 @@
     <ion-title>
       Productos
     </ion-title>
-    <ion-icon color="success" slot="end" name="add-circle" size="large"></ion-icon>
+    <!-- boton/icono para agregar -> ir a la vista/componente para el POST -->
+    <ion-icon (click)="navigateToAddProduct()" color="success" slot="end" name="add-circle" size="large"></ion-icon>
 
   </ion-toolbar>
 </ion-header>
@@ -18,16 +19,12 @@
       <ion-icon color="primary" slot="end" name="add-circle" size="large"></ion-icon>
       <ion-icon color="warning" slot="end" name="create" size="large"></ion-icon>
       <ion-icon color="danger" slot="end" name="close-circle" size="large"></ion-icon>
-
-            <!-- Alerta para el eliminar -->
-
-
     </ion-item>
 
     <ion-item *ngFor="let item of listaProductos">
-      <ion-icon (click)="setOpen(true, item.id)" color="primary" slot="end" name="add-circle" size="large"></ion-icon>
-      <ion-icon  color="warning" slot="end" name="create" size="large"></ion-icon>
-      <ion-icon (click)="confirmDelete(item.id)" color="danger" slot="end" name="close-circle" size="large"></ion-icon>
+      <ion-icon (click)="setOpen(true, item.id)" color="primary" slot="end" name="add-circle-outline" size="large"></ion-icon>
+      <ion-icon (click)="navigateToUpdateProduct(item.id)" color="warning" slot="end" name="create-outline" size="large"></ion-icon>
+      <ion-icon (click)="confirmDelete(item.id)" color="danger" slot="end" name="close-circle-outline" size="large"></ion-icon>
 
       <ion-label>{{ item.nombre }}</ion-label>
       <ion-label>{{ item.stock }}</ion-label>
@@ -51,8 +48,7 @@
               <ion-item><ion-label >Stock: {{ producto.stock }}</ion-label></ion-item>
               <ion-item>
                 <ion-button (click)="confirmDelete(item.id)" shape="round" strong="true" slot="start" color="danger" >Borrar</ion-button>
-                <ion-button slot="end"  shape="round" color="warning" strong="true" >Editar</ion-button>
-
+                <ion-button (click)="navigateToUpdateProduct(item.id)" slot="end"  shape="round" color="warning" strong="true" >Editar</ion-button>
               </ion-item>
             </ion-list>
           </ion-content>
@@ -62,6 +58,4 @@
   </ion-list>
 
 
-
-  <!-- <app-explore-container name="Tab 1 page"></app-explore-container> -->
 </ion-content>

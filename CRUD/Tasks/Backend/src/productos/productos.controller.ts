@@ -11,6 +11,7 @@ export class ProductosController {
   @Post()
   async create(@Body() createProductoDto: CreateProductoDto): Promise<Productos> {
     try {
+      console.log(createProductoDto)
       const NewProduct = await this.productosService.create(createProductoDto);
 
       if(!NewProduct) throw new Error('No se pudo crear el producto');
@@ -63,7 +64,7 @@ export class ProductosController {
     try {
       const UpdateProduct = await this.productosService.update(+id, updateProductoDto);
 
-      if(!UpdateProduct) throw new Error('No se pudo actualizar el producto');
+      if(!UpdateProduct || UpdateProduct.affected === 0) throw new Error('No se pudo actualizar el producto');
 
       return UpdateProduct;
     } catch (error) {

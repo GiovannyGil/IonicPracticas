@@ -67,7 +67,7 @@ export class ProductosService {
     try {
       const updatedProduct = await this.productoRepository.update(id, updateProductoDto);
 
-      if(!updatedProduct) throw new Error('No se pudo actualizar el producto');
+      if(!updatedProduct || updatedProduct.affected === 0) throw new Error('No se pudo actualizar el producto');
 
       return updatedProduct;
     } catch (error) {
