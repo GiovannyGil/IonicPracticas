@@ -48,12 +48,16 @@ export class Tab1Page {
   // funcion para traer todo los productos
   listaProductos: any = [];
   getProducts() {
-    this.productosService.getProducts();
-    this.productosService.productos$.subscribe(
-      (data) => {
-        this.listaProductos = data;
-      }
-    );
+    try {
+      this.productosService.getProducts();
+      this.productosService.productos$.subscribe(
+        (data) => {
+          this.listaProductos = data;
+        }
+      );
+    } catch (error) {
+      throw new Error('Ocurrio un error al listar los productos')
+    }
   }
 
   // funcion para el modal
@@ -63,62 +67,82 @@ export class Tab1Page {
   
   
   setOpen(isOpen: boolean, productoID?: number) {
-    this.isModalOpen = isOpen;
-    if (productoID) {
-      this.getProductById(productoID);
+    try {
+      this.isModalOpen = isOpen;
+      if (productoID) {
+        this.getProductById(productoID);
+      }
+    } catch (error) {
+      throw new Error('Ocurrio un error al abrir el modal')
     }
   }
 
     // Funcion para obtener la informacion de un personaje en especifico (ID)
     getProductById(productoID: number) {
-      this.productosService.getProductByID(productoID).subscribe(data => {
-        this.producto = data;
-      });
+      try {
+        this.productosService.getProductByID(productoID).subscribe(data => {
+          this.producto = data;
+        });
+      } catch (error) {
+        throw new Error('Ocurrio un error al buscar la informacion del producto')
+      }
     }
 
 
     // configuracion de alerta para eliminar un producto
     // función para confirmar la eliminación del producto
     async confirmDelete(productoID: number) {
-      const alert = await this.alertController.create({
-        header: 'Confirmar eliminación',
-        message: '¿Estás seguro de que deseas eliminar este producto?',
-        buttons: [
-          {
-            text: 'Cancelar',
-            role: 'cancel',
-            cssClass: 'secondary',
-            handler: () => {
-              console.log('Acción cancelada');
+      try {
+        const alert = await this.alertController.create({
+          header: 'Confirmar eliminación',
+          message: '¿Estás seguro de que deseas eliminar este producto?',
+          buttons: [
+            {
+              text: 'Cancelar',
+              role: 'cancel',
+              cssClass: 'secondary',
+              handler: () => {
+                console.log('Acción cancelada');
+              }
+            }, {
+              text: 'Eliminar',
+              handler: () => {
+                this.deleteProduct(productoID);
+              }
             }
-          }, {
-            text: 'Eliminar',
-            handler: () => {
-              this.deleteProduct(productoID);
-            }
-          }
-        ]
-      });
-
-      await alert.present();
+          ]
+        });
+  
+        await alert.present();
+      } catch (error) {
+        throw new Error('Ocurrio un error al procesar la alerta')
+      }
     }
 
     // funcion para ir a la pagina de editar un producto
     navigateToUpdateProduct(id: number) {
-      this.router.navigate(['/products/update', id]);
+      try {
+        this.router.navigate(['/products/update', id]);
+      } catch (error) {
+        throw new Error('Ocurrio un error al eliminar')
+      }
     }
 
     // funcion para eliminar un producto
 
     async deleteProduct(productoID: number) {
-      this.productosService.deleteProduct(productoID).subscribe(
-        () => {
-          console.log('Producto eliminado exitosamente');
-          this.getProducts();
-        },
-        (error) => {
-          console.error('Error al eliminar el producto', error);
-        }
-      );
+      try {
+        this.productosService.deleteProduct(productoID).subscribe(
+          () => {
+            console.log('Producto eliminado exitosamente');
+            this.getProducts();
+          },
+          (error) => {
+            console.error('Error al eliminar el producto', error);
+          }
+        );
+      } catch (error) {
+        throw new Error('Ocurrio un error al eliminar')
+      }
     }
 }

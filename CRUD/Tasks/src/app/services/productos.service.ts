@@ -16,7 +16,7 @@ export class ProductosService {
   // funcion para llamar el listado de todos los productos con el metodo get
   getProducts(){
     try {
-      const products = this.http.get<any[]>(this.apiUrl).subscribe(
+      this.http.get<any[]>(this.apiUrl).subscribe(
         data => this.productosSubject.next(data),
         error => console.error('Error al obtener los productos', error)
       )
@@ -55,7 +55,11 @@ export class ProductosService {
 
   // funcion para mantener refrecado los datos
   refreshProducts(){
-    this.getProducts();
+    try {
+      this.getProducts();
+    } catch (error) {
+      throw new Error('error al refrescar los productos')
+    }
   }
 
   // funcion para eliminar un producto con el metodo delete

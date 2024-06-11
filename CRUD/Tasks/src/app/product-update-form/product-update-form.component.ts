@@ -27,38 +27,54 @@ export class ProductUpdateFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.productForm = this.fb.group({
-      nombre: ['', Validators.required],
-      descripcion: ['', Validators.required],
-      precio: ['', Validators.required],
-      stock: ['', Validators.required],
-    });
-
-    this.loadProductData();
+    try {
+      this.productForm = this.fb.group({
+        nombre: ['', Validators.required],
+        descripcion: ['', Validators.required],
+        precio: ['', Validators.required],
+        stock: ['', Validators.required],
+      });
+  
+      this.loadProductData();
+    } catch (error) {
+      throw new Error('Error al validar el formulario')
+    }
   }
 
   loadProductData() {
-    this.http.get(`${environment.apiUrl}/productos/${this.productId}`).subscribe((data: any) => {
-      this.productForm.patchValue(data);
-    });
+    try {
+      this.http.get(`${environment.apiUrl}/productos/${this.productId}`).subscribe((data: any) => {
+        this.productForm.patchValue(data);
+      });
+    } catch (error) {
+      throw new Error('Error al actualizar')
+    }
   }
 
   onSubmit() {
-    if (this.productForm.valid) {
-      this.productosService.updateProduct(this.productId, this.productForm.value).subscribe(
-        () => {
-          console.log("Producto actualizado exitosamente");
-          this.productosService.refreshProducts()
-          this.router.navigate(['/tabs/tab1']); // Redirigir a la página principal
-        },
-        (error) => {
-          console.error('Error al actualizar el producto', error);
-        }
-      )
+    try {
+      if (this.productForm.valid) {
+        this.productosService.updateProduct(this.productId, this.productForm.value).subscribe(
+          () => {
+            console.log("Producto actualizado exitosamente");
+            this.productosService.refreshProducts()
+            this.router.navigate(['/tabs/tab1']); // Redirigir a la página principal
+          },
+          (error) => {
+            console.error('Error al actualizar el producto', error);
+          }
+        )
+      }
+    } catch (error) {
+      throw new Error('Error al enviar la informacion')
     }
   }
 
   onCancel() {
-    this.router.navigate(['/tabs/tab1']);
+    try {
+      this.router.navigate(['/tabs/tab1']);
+    } catch (error) {
+      throw new Error('Error al volver al inicio')
+    }
   }
 }

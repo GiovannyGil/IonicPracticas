@@ -33,22 +33,26 @@ export class ProductFormComponent implements OnInit {
 
   // FUNCION PARA 
   async onSubmit() {
-    console.log("Formulario enviado", this.productForm.value); // Depuración
-    if (this.productForm.valid) {
-
-      // Recuperar los datos del formulario
-      const newProduct = this.productForm.value
-      
-      // comprobar si el producto ya existe
-      const ProductExist = await this.checkIfProductExists(newProduct.nombre);
-
-      if(ProductExist){
-        // mostrar una alerta si el producto ya existe
-        this.showAlert('Error', 'El producto ya existe, por favor acualiza la cantidad en stock');
-        return;
+    try {
+      console.log("Formulario enviado", this.productForm.value); // Depuración
+      if (this.productForm.valid) {
+  
+        // Recuperar los datos del formulario
+        const newProduct = this.productForm.value
+        
+        // comprobar si el producto ya existe
+        const ProductExist = await this.checkIfProductExists(newProduct.nombre);
+  
+        if(ProductExist){
+          // mostrar una alerta si el producto ya existe
+          this.showAlert('Error', 'El producto ya existe, por favor acualiza la cantidad en stock');
+          return;
+        }
+  
+        const add = this.addProducto(this.productForm.value)
       }
-
-      const add = this.addProducto(this.productForm.value)
+    } catch (error) {
+      throw new Error('Ocurrio un error al enviar el registro')
     }
   }
 
@@ -66,23 +70,35 @@ export class ProductFormComponent implements OnInit {
 
 // funcion para comprobar si el producto ya existe
 async checkIfProductExists(nombre: string): Promise<any>{
-  const products = await this.http.get<any[]>('http://localhost:3000/productos').toPromise();
-  return products?.find(product => product.nombre.toLowerCase() === nombre.toLowerCase())
+  try {
+    const products = await this.http.get<any[]>('http://localhost:3000/productos').toPromise();
+    return products?.find(product => product.nombre.toLowerCase() === nombre.toLowerCase())
+  } catch (error) {
+    throw new Error('Ocurrio un error al checkear el producto')
+  }
 }
 
 
 // fucion para mostrar una alerta
 async showAlert(header: string, message: string){
-  const alert = await this.alertController.create({
-    header,
-    message,
-    buttons: ['OK']
-  })
-
-  await alert.present()
+try {
+    const alert = await this.alertController.create({
+      header,
+      message,
+      buttons: ['OK']
+    })
+  
+    await alert.present()
+} catch (error) {
+  throw new Error('Ocurrio un error al generar la alerta')
+}
 }
 
   onCancel(){
-    this.router.navigate(['/tabs/tab1']); // Redirigir a la página principal
+    try {
+      this.router.navigate(['/tabs/tab1']); // Redirigir a la página principal
+    } catch (error) {
+      throw new Error('Ocurrio un error al cerrar el modal')
+    }
   }
 }
