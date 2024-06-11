@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 // import { environment } from '../../environments/environment';
 import { AlertController } from '@ionic/angular';
+import { ProductosService } from '../services/productos.service';
 
 @Component({
   selector: 'app-product-form',
@@ -18,6 +19,7 @@ export class ProductFormComponent implements OnInit {
     private http: HttpClient,
     private router: Router,
     private alertController: AlertController,
+    private productosService: ProductosService
   ) {}
 
   ngOnInit() {
@@ -29,6 +31,7 @@ export class ProductFormComponent implements OnInit {
     });
   }
 
+  // FUNCION PARA 
   async onSubmit() {
     console.log("Formulario enviado", this.productForm.value); // Depuración
     if (this.productForm.valid) {
@@ -45,16 +48,20 @@ export class ProductFormComponent implements OnInit {
         return;
       }
 
-      this.http.post('http://localhost:3000/productos', this.productForm.value).subscribe(
-        () => {
-          console.log("Producto creado exitosamente"); // Depuración
-          this.router.navigate(['/tabs/tab1']); // Redirigir a la página principal
-        },
-        (error) => {
-          console.error('Error al crear el producto (onSubmit)', error);
-        }
-      );
+      const add = this.addProducto(this.productForm.value)
     }
+  }
+
+  async addProducto(product: any){
+    try {
+      const response = await this.productosService.addProduct(product).toPromise();
+      console.log('Producto creado exitosamente', response);
+      this.productosService.refreshProducts()
+      this.router.navigate(['/tabs/tab1/']); // Redirigir a la página principal
+    } catch (error) {
+      console.error('Error al crear el producto (addProducto)', error);
+    }
+  
   }
 
 // funcion para comprobar si el producto ya existe

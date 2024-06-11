@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http'
 import { Component } from '@angular/core'
 import { AlertController } from '@ionic/angular'
 import { Router } from '@angular/router';
+import { ProductosService } from '../services/productos.service';
 
 @Component({
   selector: 'app-tab1',
@@ -12,11 +13,9 @@ export class Tab1Page {
 
   constructor(private http: HttpClient,
       public alertController: AlertController,
-      // public modal: IonModal
+      private productosService: ProductosService,
       private router: Router
   ) { }
-
-  Api_url = 'http://localhost:3000/productos/';
 
 
   // funcion para mostrar los datos por consola automaticamente
@@ -42,14 +41,19 @@ export class Tab1Page {
 
   navigateToAddProduct() {
     this.router.navigate(['/products/new']);
+    this.getProducts()
   }
+  
 
   // funcion para traer todo los productos
   listaProductos: any = [];
-  async getProducts() {
-    return await this.http.get<any[]>(this.Api_url).subscribe(data => {
-      this.listaProductos = data;
-    })
+  getProducts() {
+    this.productosService.getProducts();
+    this.productosService.productos$.subscribe(
+      (data) => {
+        this.listaProductos = data;
+      }
+    );
   }
 
   // funcion para el modal
@@ -61,16 +65,15 @@ export class Tab1Page {
   setOpen(isOpen: boolean, productoID?: number) {
     this.isModalOpen = isOpen;
     if (productoID) {
-      this.getProductoInfo(productoID);
+      this.getProductById(productoID);
     }
   }
 
     // Funcion para obtener la informacion de un personaje en especifico (ID)
-    getProductoInfo(productoID: number) {
-      this.http.get(this.Api_url+productoID)
-        .subscribe((data: any) => {
-          this.producto = data; // Almacena la información del personaje seleccionado actualmente
-        });
+    getProductById(productoID: number) {
+      this.productosService.getProductByID(productoID).subscribe(data => {
+        this.producto = data;
+      });
     }
 
 
@@ -108,14 +111,14 @@ export class Tab1Page {
     // funcion para eliminar un producto
 
     async deleteProduct(productoID: number) {
-      return await this.http.delete(this.Api_url+productoID)
-        .subscribe(() => {
+      this.productosService.deleteProduct(productoID).subscribe(
+        () => {
+          console.log('Producto eliminado exitosamente');
           this.getProducts();
-        });
+        },
+        (error) => {
+          console.error('Error al eliminar el producto', error);
+        }
+      );
     }
-
-    
-    // UPDATE
-
-
 }

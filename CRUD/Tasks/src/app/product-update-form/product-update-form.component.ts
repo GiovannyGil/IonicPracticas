@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { AlertController } from '@ionic/angular';
+import { ProductosService } from '../services/productos.service';
 
 @Component({
   selector: 'app-product-update-form',
@@ -19,7 +20,8 @@ export class ProductUpdateFormComponent implements OnInit {
     private http: HttpClient,
     private router: Router,
     private route: ActivatedRoute,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private productosService: ProductosService
   ) {
     this.productId = this.route.snapshot.params['id'];
   }
@@ -43,15 +45,16 @@ export class ProductUpdateFormComponent implements OnInit {
 
   onSubmit() {
     if (this.productForm.valid) {
-      this.http.patch(`${environment.apiUrl}/productos/${this.productId}`, this.productForm.value).subscribe(
+      this.productosService.updateProduct(this.productId, this.productForm.value).subscribe(
         () => {
           console.log("Producto actualizado exitosamente");
+          this.productosService.refreshProducts()
           this.router.navigate(['/tabs/tab1']); // Redirigir a la página principal
         },
         (error) => {
           console.error('Error al actualizar el producto', error);
         }
-      );
+      )
     }
   }
 
