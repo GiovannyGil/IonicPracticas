@@ -27,6 +27,8 @@ log.txt
 /tmp
 /out-tsc
 /bazel-out
+platforms
+/platforms
 
 # Node
 /node_modules

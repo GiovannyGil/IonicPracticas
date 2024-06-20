@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   apiUrl: 'http://localhost:3000'
+  // apiUrl: 'https://6655-138-121-15-30.ngrok-free.app'
 };
 /*
  * For easier debugging in development mode, you can import the following file

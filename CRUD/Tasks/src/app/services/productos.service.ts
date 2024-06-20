@@ -8,6 +8,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 })
 export class ProductosService {
   private apiUrl = 'http://localhost:3000/productos';
+  // private apiUrl = 'https://0233-138-121-15-30.ngrok-free.app/productos'
   private productosSubject = new BehaviorSubject<Productos[]>([]);
   productos$: Observable<any[]> = this.productosSubject.asObservable();
 

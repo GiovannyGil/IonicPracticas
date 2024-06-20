@@ -14,6 +14,8 @@ import { ProductosService } from '../services/productos.service';
 export class ProductUpdateFormComponent implements OnInit {
   productForm: FormGroup = new FormGroup({});
   productId: number;
+  // private apiUrl = 'https://6655-138-121-15-30.ngrok-free.app'
+  private apiUrl = 'http://localhost:3000';
 
   constructor(
     private fb: FormBuilder,
@@ -43,7 +45,7 @@ export class ProductUpdateFormComponent implements OnInit {
 
   loadProductData() {
     try {
-      this.http.get(`${environment.apiUrl}/productos/${this.productId}`).subscribe((data: any) => {
+      this.http.get(`${this.apiUrl}/productos/${this.productId}`).subscribe((data: any) => {
         this.productForm.patchValue(data);
       });
     } catch (error) {
